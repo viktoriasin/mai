@@ -1,0 +1,1 @@
+javac org/mai/dep810/Main.java
