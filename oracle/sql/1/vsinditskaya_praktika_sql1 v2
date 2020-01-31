@@ -1,0 +1,77 @@
+--1
+select * from SALES_ORDER;
+
+--2
+select sales_order_id from sales_order
+where order_date >= to_date('2016-01-01', 'yyyy-mm-dd');
+
+--3
+select sales_order_id from sales_order
+where order_date between to_date('2016-01-01', 'yyyy-mm-dd') and  to_date('2016-07-15', 'yyyy-mm-dd');
+
+--4
+select * from MANAGER
+where MANAGER_FIRST_NAME = 'Henry';
+
+--5
+select m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME, sales_order_id from manager m
+left join SALES_ORDER s on  m.MANAGER_ID = s.MANAGER_ID
+where MANAGER_FIRST_NAME = 'Henry';
+
+--6
+select distinct  COUNTRY from CITY
+
+--7
+select distinct region, country from city
+
+--8
+select country, count(distinct CITY_NAME) cnt
+from CITY
+group by country
+order by cnt;
+
+--9
+select sum(L.PRODUCT_QTY) from SALES_ORDER S
+join SALES_ORDER_LINE L on S.SALES_ORDER_ID = L.SALES_ORDER_ID
+where S.order_date between to_date('2016-01-01', 'yyyy-mm-dd') and  to_date('2016-01-30', 'yyyy-mm-dd');
+
+--10
+select distinct country from city
+union all
+select distinct region from CITY
+union all
+select distinct CITY_NAME from CITY;
+
+
+--11
+select m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME from manager m
+                                                          join sales_order s on m.manager_id = s.manager_id
+                                                          join sales_order_line l on l.sales_order_id = s.sales_order_id
+where trunc(s.order_date,'mm') = to_date('2016-01-01', 'yyyy-mm-dd')
+group by  m.MANAGER_ID, m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME
+having sum(l.product_qty*l.product_price) = (
+    select max(sum(l.product_qty*l.product_price))
+    from manager m
+             join sales_order s on m.manager_id = s.manager_id
+             join sales_order_line l on l.sales_order_id = s.sales_order_id
+    where trunc(s.order_date, 'mm') = to_date('2016-01-01', 'yyyy-mm-dd')
+    group by m.manager_id
+);
+
+
+--11 без подзапроса
+with tmp as
+ (
+select m.manager_id
+, sum(l.product_qty*l.product_price) res
+from sales_order_line l, sales_order s, manager m
+where m.manager_id = s.manager_id and s.sales_order_id = l.sales_order_id
+and  trunc(s.order_date,'mm') = to_date('2016-01-01', 'yyyy-mm-dd')
+group by m.manager_id
+)
+
+select m.manager_first_name
+, m.manager_last_name
+from manager m join tmp on m.manager_id = tmp.manager_id
+where tmp.res = (select max(tmp.res) from tmp);
+

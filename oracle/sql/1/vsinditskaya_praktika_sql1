@@ -1,0 +1,59 @@
+--1
+select * from SALES_ORDER;
+
+--2
+select sales_order_id from sales_order
+where order_date >= to_date('2016-01-01', 'yyyy-mm-dd');
+
+--3
+select sales_order_id from sales_order
+where order_date between to_date('2016-01-01', 'yyyy-mm-dd') and  to_date('2016-07-15', 'yyyy-mm-dd');
+
+--4
+select * from MANAGER
+where MANAGER_FIRST_NAME = 'Henry';
+
+--5
+select m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME, sales_order_id from manager m
+left join SALES_ORDER s on  m.MANAGER_ID = s.MANAGER_ID
+where MANAGER_FIRST_NAME = 'Henry';
+
+--6
+select distinct  COUNTRY from CITY
+
+--7
+select distinct region, country from city
+
+--8
+select country, count(distinct CITY_NAME) cnt
+from CITY
+group by country
+order by cnt;
+
+--9
+select sum(L.PRODUCT_QTY) from SALES_ORDER S
+join SALES_ORDER_LINE L on S.SALES_ORDER_ID = L.SALES_ORDER_ID
+where S.order_date between to_date('2016-01-01', 'yyyy-mm-dd') and  to_date('2016-01-30', 'yyyy-mm-dd');
+
+--10
+select distinct country from city
+union all
+select distinct region from CITY
+union all
+select distinct CITY_NAME from CITY;
+
+
+--11
+select m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME from manager m
+                                                          join sales_order s on m.manager_id = s.manager_id
+                                                          join sales_order_line l on l.sales_order_id = s.sales_order_id
+where trunc(s.order_date,'mm') = to_date('2016-01-01', 'yyyy-mm-dd')
+group by  m.MANAGER_ID, m.MANAGER_FIRST_NAME, m.MANAGER_LAST_NAME
+having sum(product_price) = (
+    select max(sum(product_price))
+    from manager m
+             join sales_order s on m.manager_id = s.manager_id
+             join sales_order_line l on l.sales_order_id = s.sales_order_id
+    where trunc(s.order_date, 'mm') = to_date('2016-01-01', 'yyyy-mm-dd')
+    group by m.manager_id
+);
