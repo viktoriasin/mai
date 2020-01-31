@@ -1,0 +1,47 @@
+2019-12-28 00:38:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "COMMENTS" не найдена
+Table "COMMENTS" not found; SQL statement:
+delete from comments [42102-197]
+2019-12-28 00:41:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "USERS" уже существует
+Table "USERS" already exists; SQL statement:
+
+         create table users(
+          id Int primary key,
+          display_name varchar(1000),
+          location varchar(1000),
+          reputation Int,
+          views Int,
+          up_votes Int,
+          down_votes Int,
+          account_id Int,
+          creation_date timestamp,
+          last_access_date timestamp
+         )
+        [42101-197]
+2019-12-28 00:41:44 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "COMMETNS" уже существует
+Table "COMMETNS" already exists; SQL statement:
+
+         create table commetns(
+            id Int primary key,
+            post_id Int,
+            score Int,
+            text varchar(10000),
+            creation_date timestamp,
+            user_id Int
+         )
+        [42101-197]
+2019-12-28 00:42:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "COMMETNS" уже существует
+Table "COMMETNS" already exists; SQL statement:
+
+         create table commetns(
+            id Int primary key,
+            post_id Int,
+            score Int,
+            text varchar(10000),
+            creation_date timestamp,
+            user_id Int
+         )
+        [42101-197]
