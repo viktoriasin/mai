@@ -14,7 +14,7 @@
 
 *.xml
 
-
+*ipynb_checkpoints
 
 
 
